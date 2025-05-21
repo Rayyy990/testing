@@ -2,6 +2,9 @@ package com.db_test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
 
 /**This is the testing Main Class.
 Created by: Arkar
@@ -30,11 +33,34 @@ public class Main {
         return con;
     }
 
+    private ArrayList<office> report1(Connection con){
+        ArrayList<office> al = new ArrayList<>();
+        try {
+            PreparedStatement ps = con.prepareStatement("SELECT officeCode, state, city FROM offices"); //java ka ny sql ko hlan poh lo ya ag lok//
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()){
+                office of = new office(rs.getInt(1),rs.getString(2), rs.getString(3));
+                al.add(of);
+            }
+            rs.close();
+            ps.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+
+        return  al;
+    }
+
     public static void main(String[] args) {
         //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
         // to see how IntelliJ IDEA suggests fixing it.
         Main m = new Main();
         Connection con = m.get_db_connnection();
+        ArrayList<office> al = m.report1(con);
+        System.out.println(al);
+
         try {
             if (con != null){
                 con.close();
